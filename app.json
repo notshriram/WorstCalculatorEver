@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Calculator",
-    "slug": "Calculator",
+    "name": "Worst Calculator Ever",
+    "slug": "worstcalcever",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,14 +13,17 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "description": "Calculator App that is rarely ever correct. A gazillion times worse than a broken clock that's correct atleast twice a day. Don't do your taxes with this.",
+    "githubUrl": "https://github.com/notshriram/WorstCalculatorEver",
+    "android": {
+      "package": "com.notshriram.worstcalcever"
     }
   }
 }
