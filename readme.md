@@ -2,4 +2,4 @@
 
 # Worst Calculator Ever
 
-Calculator App that is rarely ever correct. A gazillion worse than a broken clock that's correct atleast twice a day. Don't do your taxes with this.
+Calculator App that is rarely ever correct. A gazillion times worse than a broken clock that's correct atleast twice a day. Don't do your taxes with this.
