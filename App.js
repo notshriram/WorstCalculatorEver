@@ -2,6 +2,9 @@ import { StatusBar } from "expo-status-bar";
 import React, { Component } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import InputNumberButton from "./InputNumberButton";
+import * as tf from "@tensorflow/tfjs";
+import * as tfrn from "@tensorflow/tfjs-react-native";
+import { vectorize, strip, devectorize } from "./utils";
 
 const buttons = [
   ["clear", "del"],
@@ -17,9 +20,27 @@ export default class App extends Component {
     this.initialState = {
       displayValue: "0",
       operator: null,
+      model: null,
     };
     this.state = this.initialState;
   }
+
+  async componentDidMount() {
+    // Wait for tf to be ready.
+    await tf.ready();
+    const modelJson = require("./assets/model.json");
+    const modelWeights = require("./assets/group1-shard1of1.bin");
+    this.loadModel(modelJson, modelWeights);
+  }
+
+  loadModel = async (modelJson, modelWeights) => {
+    // Load the model from assets folder
+    const model = await tf.loadLayersModel(
+      tfrn.bundleResourceIO(modelJson, modelWeights)
+    );
+    // Set the model to the state
+    this.setState({ model: model });
+  };
 
   renderButtons() {
     let layouts = buttons.map((buttonRows, index) => {
@@ -64,10 +85,7 @@ export default class App extends Component {
       case "x":
         this.setState({
           operator: input,
-          displayValue:
-            (operator !== null
-              ? displayValue.substr(0, displayValue.length - 1)
-              : displayValue) + input,
+          displayValue: displayValue + input,
         });
         break;
 
@@ -78,7 +96,9 @@ export default class App extends Component {
         });
         break;
       case "clear":
-        this.setState(this.initialState);
+        this.setState({
+          displayValue: "0",
+        });
         break;
       case "del":
         let string = displayValue.toString();
@@ -89,13 +109,20 @@ export default class App extends Component {
         });
         break;
       case "=":
-        let result = Math.random() * parseInt(displayValue.toString(), 10);
-        this.setState({
-          displayValue: result < 1 ? "yes" : result.toString(),
-        });
+        const vectorized_input = vectorize(displayValue);
+        if (this.state.model != null) {
+          const vectorized_result = this.state.model.predict(
+            tf.tensor3d([vectorized_input], [1, 5, 15])
+          );
+          const result = strip(devectorize(vectorized_result.arraySync()[0]));
+          this.setState({
+            displayValue: result,
+          });
+        };
         break;
     }
   };
+
   render() {
     return (
       <View style={styles.container}>
