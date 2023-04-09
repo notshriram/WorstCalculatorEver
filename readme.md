@@ -22,9 +22,11 @@ then scan the QR code from the terminal with the expo app(android) or camera app
 
 The model uses a simple RNN with a time distributed dense layer. The model is trained on a dataset of 50000 binary expressions. The dataset is generated using a basic random expression generator and works with operands between 0 and 99 and returns a prediction of 5 chars.
 
+```
 hidden_units = 128
 max_time_steps = 5 (output length)
 num_chars = 15 ("0123456789+-*/.")
+```
 
 ```python
   model.add(SimpleRNN(hidden_units, input_shape=(None, num_chars)))
